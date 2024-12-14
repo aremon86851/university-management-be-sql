@@ -1,22 +1,22 @@
-import { AcademicSemester, Prisma } from '@prisma/client';
+import { Student, Prisma } from '@prisma/client';
 import prisma from '../../../constants/prisma-client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IPaginationOptions } from '../../../interfaces/pagination';
-import { AcademicSemesterFilteredFields } from './AcademicSemester.constant';
-import { IFilterOptions } from './AcademicSemester.interface';
+import { StudentFilteredFields } from './Student.constant';
+import { IFilterOptions } from './Student.interface';
 
-const createAcademicSemester = async (payload: AcademicSemester) => {
-  const createSemester = await prisma.academicSemester.create({
+const createStudent = async (payload: Student) => {
+  const createSemester = await prisma.student.create({
     data: payload,
   });
   return createSemester;
 };
 
-const getAllSemesters = async (
+const getAllDepartment = async (
   filter: IFilterOptions,
   paginationOptions: IPaginationOptions
 ) => {
-  const { page, limit, skip } =
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
   // Filter
   const { searchTerm, ...filterData } = filter;
@@ -25,7 +25,7 @@ const getAllSemesters = async (
 
   if (searchTerm) {
     andConditions.push({
-      OR: AcademicSemesterFilteredFields.map(field => ({
+      OR: StudentFilteredFields.map(field => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -43,17 +43,19 @@ const getAllSemesters = async (
       })),
     });
   }
-
-  const whereConditions: Prisma.AcademicSemesterWhereInput =
+  const whereConditions: Prisma.StudentWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const semesters = await prisma.academicSemester.findMany({
+  const semesters = await prisma.student.findMany({
     where: whereConditions,
     skip,
     take: limit,
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
   });
 
-  const total = await prisma.academicSemester.count();
+  const total = await prisma.student.count();
   return {
     meta: {
       page,
@@ -64,25 +66,23 @@ const getAllSemesters = async (
   };
 };
 
-const getASingleAcademicSemester = async (
-  id: string
-): Promise<AcademicSemester | null> => {
-  const academicSemester = await prisma.academicSemester.findUnique({
+const getASingleStudent = async (id: string): Promise<Student | null> => {
+  const Student = await prisma.student.findUnique({
     where: { id },
   });
-  return academicSemester;
+  return Student;
 };
 
-const deleteAcademicSemester = async (id: string) => {
-  const deleteSemester = await prisma.academicSemester.delete({
+const deleteStudent = async (id: string) => {
+  const deleteSemester = await prisma.student.delete({
     where: { id },
   });
   return deleteSemester;
 };
 
-export const AcademicSemesterService = {
-  createAcademicSemester,
-  getAllSemesters,
-  getASingleAcademicSemester,
-  deleteAcademicSemester,
+export const StudentService = {
+  createStudent,
+  getAllDepartment,
+  getASingleStudent,
+  deleteStudent,
 };

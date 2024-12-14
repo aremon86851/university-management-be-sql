@@ -55,7 +55,6 @@ model AcademicDepartment{
 
 model Student{
   id String @id @default(uuid())
-  studentId String
   firstName String
   lastName String
   middleName String?
@@ -78,7 +77,6 @@ model Student{
 
 model Faculty{
   id String @id @default(uuid())
-  facultyId Int
   firstName String
   lastName String
   middleName String?
