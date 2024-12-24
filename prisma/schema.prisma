@@ -25,7 +25,7 @@ model AcademicSemester{
   updatedAt DateTime @updatedAt()
 
   @@map("academic_semester")
-  students Student?
+  students Student[]
 }
 
 model AcademicFaculty{
@@ -35,9 +35,9 @@ model AcademicFaculty{
   updatedAt DateTime @updatedAt()
 
   @@map("academic_faculty")
-  academicDepartments AcademicDepartment?
-  students Student?
-  faculties Faculty?
+  academicDepartments AcademicDepartment[]
+  students Student[]
+  faculties Faculty[]
 }
 
 model AcademicDepartment{
@@ -46,11 +46,11 @@ model AcademicDepartment{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   academicFaculty AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
-  academicFacultyId String @unique
+  academicFacultyId String
 
   @@map("academic_department")
-  students Student?
-  faculties Faculty?
+  students Student[]
+  faculties Faculty[]
 }
 
 model Student{
@@ -66,11 +66,11 @@ model Student{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   academicSemester AcademicSemester @relation(fields: [academicSemesterId], references: [id])
-  academicSemesterId String @unique
+  academicSemesterId String
   academicDepartment AcademicDepartment @relation(fields: [academicDepartmentId], references: [id])
-  academicDepartmentId String @unique
+  academicDepartmentId String
   academicFaculty AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
-  academicFacultyId String @unique
+  academicFacultyId String
  
   @@map("student")
 }
@@ -89,9 +89,51 @@ model Faculty{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   academicDepartment AcademicDepartment @relation(fields: [academicDepartmentId], references: [id])
-  academicDepartmentId String @unique
+  academicDepartmentId String 
   academicFaculty AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
-  academicFacultyId String @unique
+  academicFacultyId String
 
   @@map("faculty")
+}
+
+model Building {
+  id String @id @default(uuid())
+  title String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  Room Room[]
+}
+
+model Room{
+  id String @id @default(uuid())
+  roomNumber String
+  floor String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  buildingId String
+  building Building @relation(fields: [buildingId], references: [id])
+}
+
+model Course{
+  id String @id @default(uuid())
+  title String
+  code String
+  credits Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@map("courses")
+  prerequisite CourseToPrerequisite[] @relation(name: "CourseToPrerequisite")
+  prerequisiteFor CourseToPrerequisite[] @relation(name: "PrerequisiteToCourse")
+}
+
+model CourseToPrerequisite{
+  courseId String
+  prerequisiteId String
+
+  course Course @relation(fields: [courseId], references: [id],name:"CourseToPrerequisite")
+  prerequisite Course @relation(fields: [prerequisiteId], references: [id],name:"PrerequisiteToCourse")
+
+  @@id([courseId, prerequisiteId])
 }

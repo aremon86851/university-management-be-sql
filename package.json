@@ -31,7 +31,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.1",
+    "@prisma/client": "^6.1.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/jsonwebtoken": "^9.0.2",
