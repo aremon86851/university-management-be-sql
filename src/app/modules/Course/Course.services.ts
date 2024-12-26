@@ -122,9 +122,44 @@ const deleteCourse = async (id: string) => {
   return deleteCourse;
 };
 
+const assignFacultyToCourse = async (id: string, payload: string[]) => {
+  const result = await prisma.courseFaculty.createMany({
+    data: payload.map(facultyId => ({
+      courseId: id,
+      facultyId,
+    })),
+  });
+  if (!result) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Course faculty not create successfully'
+    );
+  }
+  const assignedFacultyData = await prisma.courseFaculty.findMany({
+    where: {
+      courseId: id,
+    },
+  });
+  return assignedFacultyData;
+};
+
+const deleteFacultyFromCourse = async (id: string, payload: string[]) => {
+  const deleteCourse = await prisma.courseFaculty.deleteMany({
+    where: {
+      courseId: id,
+      facultyId: {
+        in: payload,
+      },
+    },
+  });
+  return deleteCourse;
+};
+
 export const CourseService = {
   createCourse,
   getAllCourse,
   getASingleCourse,
   deleteCourse,
+  assignFacultyToCourse,
+  deleteFacultyFromCourse,
 };

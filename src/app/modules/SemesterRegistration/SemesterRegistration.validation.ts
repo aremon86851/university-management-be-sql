@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const createFacultyZodValidation = z.object({
+const createSemesterRegistrationZodValidation = z.object({
   body: z.object({
     firstName: z.string({ required_error: 'First name is required' }),
     lastName: z.string({ required_error: 'Last name is required' }),
@@ -14,11 +14,11 @@ const createFacultyZodValidation = z.object({
     academicDepartmentId: z.string({
       required_error: 'Academic department id is required',
     }),
-    academicFacultyId: z.string({
-      required_error: 'Academic faculty id is required',
+    academicSemesterRegistrationId: z.string({
+      required_error: 'Academic SemesterRegistration id is required',
     }),
   }),
 });
-export const FacultyZodValidation = {
-  createFacultyZodValidation,
+export const SemesterRegistrationZodValidation = {
+  createSemesterRegistrationZodValidation,
 };

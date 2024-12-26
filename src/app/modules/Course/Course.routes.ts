@@ -12,6 +12,12 @@ routes.post(
   validateRequest(CourseZodValidation.createCourseZodValidation),
   CourseController.createCourse
 );
+routes.post(
+  '/:id/assign-faculty',
+  validateRequest(CourseZodValidation.assignCourseFacultyZodValidation),
+  CourseController.assignFacultyToCourse
+);
+routes.delete('/:id/remove-faculty', CourseController.deleteFacultyFromCourse);
 
 routes.delete('/:id', CourseController.deleteCourse);
 

@@ -4,10 +4,11 @@ import { AcademicDepartmentRoutes } from '../modules/AcademicDepartment/Academic
 import { AcademicFacultyRoutes } from '../modules/AcademicFaculty/AcademicFaculty.routes';
 import { AcademicSemesterRoutes } from '../modules/AcademicSemester/AcademicSemester.routes';
 import { BuildingRoutes } from '../modules/Building/Building.routes';
+import { CourseRoutes } from '../modules/Course/Course.routes';
 import { FacultyRoutes } from '../modules/Faculty/Faculty.routes';
 import { RoomRoutes } from '../modules/Room/Room.routes';
+import { SemesterRegistrationRoutes } from '../modules/SemesterRegistration/SemesterRegistration.routes';
 import { StudentRoutes } from '../modules/Student/Student.routes';
-import { CourseRoutes } from '../modules/Course/Course.routes';
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ const moduleRoutes = [
   {
     path: '/courses',
     routes: CourseRoutes,
+  },
+  {
+    path: '/semester-registrations',
+    routes: SemesterRegistrationRoutes,
   },
 ];
 
