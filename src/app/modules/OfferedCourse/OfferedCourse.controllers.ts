@@ -57,9 +57,25 @@ const deleteOfferedCourse = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const OfferedCourseClassSchedule = catchAsync(
+  async (req: Request, res: Response) => {
+    const data = req.body;
+    const result = await OfferedCourseService.createOfferedCourseClassSchedule(
+      data
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Offered course created successfully',
+      data: result,
+    });
+  }
+);
+
 export const OfferedCourseController = {
   createOfferedCourse,
   getAllSemesters,
   getASingleOfferedCourse,
   deleteOfferedCourse,
+  OfferedCourseClassSchedule,
 };

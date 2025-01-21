@@ -1,5 +1,11 @@
-import { OfferedCourse, Prisma } from '@prisma/client';
+import {
+  OfferedCourse,
+  OfferedCourseClassSchedule,
+  Prisma,
+} from '@prisma/client';
+import httpStatus from 'http-status';
 import prisma from '../../../constants/prisma-client';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { OfferedCourseFilteredFields } from './OfferedCourse.constant';
@@ -98,9 +104,57 @@ const deleteOfferedCourse = async (id: string) => {
   return deleteSemester;
 };
 
+const createOfferedCourseClassSchedule = async (
+  payload: OfferedCourseClassSchedule
+): Promise<OfferedCourseClassSchedule | null> => {
+  const existingClass = await prisma.offeredCourseClassSchedule.findMany({
+    where: {
+      dayOfWeek: payload.dayOfWeek,
+      room: {
+        id: payload.roomId,
+      },
+    },
+  });
+
+  const existingFaculty = await prisma.offeredCourseClassSchedule.findFirst({
+    where: {
+      dayOfWeek: payload.dayOfWeek,
+      faculty: {
+        id: payload.facultyId,
+      },
+    },
+  });
+  if (!existingFaculty) {
+    throw new ApiError(httpStatus.CONFLICT, 'Faculty is not availablel');
+  }
+
+  const existingSlot = existingClass.map(slot => ({
+    startTime: slot.startTime,
+    endTime: slot.endTime,
+    dayOfWeek: slot.dayOfWeek,
+  }));
+
+  const newSlot = {
+    startTime: new Date(payload.startTime),
+    endTime: new Date(payload.endTime),
+    dayOfWeek: payload.dayOfWeek,
+  };
+
+  for (const slot of existingSlot) {
+    if (slot.startTime < newSlot.endTime && slot.endTime > newSlot.startTime) {
+      throw new ApiError(httpStatus.CONFLICT, 'Slot already exists');
+    }
+  }
+  const result = await prisma.offeredCourseClassSchedule.create({
+    data: payload,
+  });
+  return result;
+};
+
 export const OfferedCourseService = {
   createOfferedCourse,
   getAllSemesters,
   getASingleOfferedCourse,
   deleteOfferedCourse,
+  createOfferedCourseClassSchedule,
 };

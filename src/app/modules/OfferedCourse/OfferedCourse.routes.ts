@@ -13,6 +13,11 @@ routes.post(
   OfferedCourseController.createOfferedCourse
 );
 
+routes.post(
+  '/create-offered-course-class-schedule',
+  OfferedCourseController.OfferedCourseClassSchedule
+);
+
 routes.delete('/:id', OfferedCourseController.deleteOfferedCourse);
 
 export const OfferedCourseRoutes = routes;
